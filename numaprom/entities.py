@@ -22,10 +22,12 @@ class Status(str, Enum):
     ARTIFACT_STALE = "artifact_is_stale"
 
 
-@dataclass(frozen=True)
-class TrainerPayload:
-    uuid: str
-    composite_keys: OrderedDict[str, str]
+@dataclass
+class PrometheusMetric:
+    name: str
+    timestamp: int
+    value: float
+    labels: Dict[str, str]
 
 
 @dataclass(repr=False)
@@ -36,6 +38,7 @@ class StreamPayload:
     composite_keys: Dict[str, str]
     status: Status = Status.RAW
     metadata: Dict[str, Any] = None
+    features: List[str] = None
 
     @property
     def start_ts(self):
@@ -108,15 +111,21 @@ class PrometheusPayload:
 
     def __repr__(self):
         return (
-            "{timestamp_ms: %s, name: %s, namespace: %s, "
-            "subsystem: %s, type: %s, value: %s, labels: %s}"
-            % (
-                self.timestamp_ms,
-                self.name,
-                self.namespace,
-                self.subsystem,
-                self.type,
-                self.value,
-                self.labels,
-            )
+                "{timestamp_ms: %s, name: %s, namespace: %s, "
+                "subsystem: %s, type: %s, value: %s, labels: %s}"
+                % (
+                    self.timestamp_ms,
+                    self.name,
+                    self.namespace,
+                    self.subsystem,
+                    self.type,
+                    self.value,
+                    self.labels,
+                )
         )
+
+
+@dataclass(frozen=True)
+class TrainerPayload:
+    uuid: str
+    composite_keys: OrderedDict[str, str]

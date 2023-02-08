@@ -1,0 +1,58 @@
+univariate:
+  - metrics:
+    - name: "error_rate"
+      config:
+        - name: "argo_rollouts"
+          metrics_config:
+            keys: [ "namespace", "name" ]
+            compare_by: "hash_id"
+            features: [ "error_rate" ]
+            scrape_interval: int = 30
+          model_config:
+            name: "VanillaAE",
+            win_size: 12,
+            threshold_min: 0.001,
+            retrain_freq_hr: 8,
+            resume_training: True,
+            num_epochs: 50,
+            num_features: 1
+        - name: "argo_cd"
+          metrics_config:
+            keys: [ "namespace", "name" ]
+            compare_by: null
+            features: [ "error_rate" ]
+            scrape_interval: int = 30
+          model_config:
+            name: "VanillaAE",
+            win_size: 12,
+            threshold_min: 0.001,
+            retrain_freq_hr: 8,
+            resume_training: True,
+            num_epochs: 50,
+            num_features: 1
+    - name: "latency"
+      config:
+        - name: "argo_rollouts"
+          metrics_config:
+            keys: [ "namespace", "name" ]
+            compare_by: "hash_id"
+            features: [ "latency" ]
+            scrape_interval: int = 30
+          model_config:
+            - name: "VanillaAE",
+              win_size: 12,
+              threshold_min: 0.001,
+              retrain_freq_hr: 8,
+              resume_training: True,
+              num_epochs: 50,
+              num_features: 1
+  - output_config:
+      - unified_metric_name: "unified"
+        unified_metrics: List[str]
+        unified_strategy: str = "max"
+        unified_weights: List[int] = null
+        feature_anomalies: bool = True
+multivariate:
+
+
+
